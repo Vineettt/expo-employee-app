@@ -1,5 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, Linking, Platform } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Linking,
+  Platform,
+  Alert,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Title, Card } from "react-native-paper";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
@@ -7,7 +15,7 @@ import { Button } from "react-native-paper";
 
 const Profile = (props) => {
   const {
-    id,
+    _id,
     name,
     picture,
     phone,
@@ -17,10 +25,31 @@ const Profile = (props) => {
   } = props.route.params.item;
   const openDail = () => {
     if (Platform.OS === "android") {
-      Linking.openURL("tel:+12334343434");
+      Linking.openURL(`tel:${phone}`);
     } else {
-      Linking.openURL("telprompt:+12334343434");
+      Linking.openURL(`telprompt:${phone}`);
     }
+  };
+
+  const deleteEmployee = () => {
+    fetch("https://c0dd26231e91.ngrok.io/delete", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: _id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((deletedEmployee) => {
+        console.log(deletedEmployee);
+        Alert.alert(`${name} deleted`);
+        props.navigation.navigate("Home");
+      })
+      .catch((err) => {
+        Alert.alert("Something Went Wrong");
+      });
   };
 
   return (
@@ -51,7 +80,7 @@ const Profile = (props) => {
       <Card
         style={styles.myCard}
         onPress={() => {
-          Linking.openURL("mailto:Dev@dev.in");
+          Linking.openURL(`mailto:${email}`);
         }}
       >
         <View style={styles.cardContent}>
@@ -83,7 +112,17 @@ const Profile = (props) => {
           icon="account-edit"
           mode="contained"
           theme={theme}
-          onPress={() => console.log("Pressed")}
+          onPress={() =>
+            props.navigation.navigate("Create", {
+              _id,
+              name,
+              picture,
+              phone,
+              salary,
+              email,
+              position,
+            })
+          }
         >
           Edit
         </Button>
@@ -92,7 +131,7 @@ const Profile = (props) => {
           icon="delete"
           mode="contained"
           theme={theme}
-          onPress={() => console.log("Pressed")}
+          onPress={() => deleteEmployee()}
         >
           Fire Employee
         </Button>

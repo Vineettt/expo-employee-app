@@ -1,55 +1,38 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, Image, FlatList, Alert } from "react-native";
 import { Card, FAB } from "react-native-paper";
+import { useSelector, useDispatch } from "react-redux";
 
 const Home = ({ navigation }) => {
-  const data = [
-    {
-      id: "1",
-      name: "vin",
-      email: "dev@dev.in",
-      salary: "5 lpa",
-      phone: "123",
-      position: "web dev",
-      picture:
-        "https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
-    },
-    {
-      id: "2",
-      name: "vin1",
-      email: "dev1@dev.in",
-      salary: "5 lpa",
-      phone: "1232",
-      position: "web dev",
-      picture:
-        "https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
-    },
-    {
-      id: "3",
-      name: "vin2",
-      email: "dev2@dev.in",
-      salary: "5 lpa",
-      phone: "12123",
-      position: "web dev",
-      picture:
-        "https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
-    },
-    {
-      id: "4",
-      name: "vin3",
-      email: "dev3@dev.in",
-      salary: "5 lpa",
-      phone: "12123",
-      position: "ml expert",
-      picture:
-        "https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
-    },
-  ];
+  // const [data, setdata] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector((state) => {
+    return state.data;
+  });
+
+  const fetchData = () => {
+    fetch("https://c0dd26231e91.ngrok.io/")
+      .then((res) => res.json())
+      .then((results) => {
+        // setdata(results);
+        // setLoading(false);
+        dispatch({ type: "ADD_DATA", payload: results });
+        dispatch({ type: "SET_LOADING", payload: false });
+      })
+      .catch((err) => {
+        Alert.alert("Something Went Wrong");
+      });
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   const renderList = (item) => {
     return (
       <Card
         style={styles.mycard}
-        key={item.id}
+        key={item._id}
         onPress={() => navigation.navigate("Profile", { item })}
       >
         <View style={styles.cardView}>
@@ -60,8 +43,7 @@ const Home = ({ navigation }) => {
               borderRadius: 60 / 2,
             }}
             source={{
-              uri:
-                "https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
+              uri: item.picture,
             }}
           />
           <View style={{ marginLeft: 10 }}>
@@ -79,7 +61,9 @@ const Home = ({ navigation }) => {
         renderItem={({ item }) => {
           return renderList(item);
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
+        onRefresh={() => fetchData()}
+        refreshing={loading}
       />
       <FAB
         style={styles.fab}

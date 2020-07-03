@@ -1,11 +1,15 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Constant from "expo-constants";
 import Home from "./screens/Home";
 import CreateEmployee from "./screens/CreateEmployee";
 import Profile from "./screens/Profile";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import { reducer } from "./reducers/reducer";
+
+const store = createStore(reducer);
 
 const Stack = createStackNavigator();
 
@@ -39,9 +43,11 @@ function App() {
 
 export default () => {
   return (
-    <NavigationContainer>
-      <App />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    </Provider>
   );
 };
 
