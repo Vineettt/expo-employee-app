@@ -1,6 +1,6 @@
 # expo-employee-app
 
-##SERVER
+## SERVER
 
 INSTALL NPM MODULES
 
@@ -8,7 +8,7 @@ INSTALL NPM MODULES
 npm install
 ```
 
-##start server
+## start server
 
 ```
 nodemon app.js

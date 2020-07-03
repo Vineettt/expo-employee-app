@@ -1,6 +1,6 @@
 # expo-employee-app
 
-##REACT NATIVE APP
+## REACT NATIVE APP
 
 Install node modules
 
@@ -29,7 +29,7 @@ Create account on cloudinary
   };
 ```
 
-##start expo app
+## start expo app
 
 ```
 npm start
